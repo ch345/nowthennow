@@ -12,11 +12,17 @@ time, and by what people care about.
 
 | Path          | What it is                                                      |
 | ------------- | --------------------------------------------------------------- |
-| `pipeline/`   | Python package (`ntn`): crawler, extraction, enrichment         |
+| `pipeline/`   | Python package (`ntn`): crawl, extract, enrich, embed, cluster  |
 | `web/`        | React + TypeScript site, deployed to GitHub Pages               |
 | `.github/`    | CI, scheduled crawl, and deploy workflows                       |
 
 Archived page content is stored privately on Hugging Face, never in this repository.
+
+## Status
+
+Early proof of concept. The pipeline runs locally from crawl to topic clusters, and the web app
+draws them as a scatter plot from a local, git-ignored data file. The deployed site does not show
+data yet: publishing public-safe data at deploy time is not built.
 
 ## Development
 
@@ -24,9 +30,9 @@ Requires [uv](https://docs.astral.sh/uv/) and Node 22+.
 
 ```sh
 # pipeline
-cd pipeline && uv sync && uv run pytest
+cd pipeline && uv sync --extra ml && uv run pytest   # see pipeline/README.md
 
-# web
+# web (shows data if pipeline/ has produced web/public/data/points.json)
 cd web && npm install && npm run dev
 
 # git hooks

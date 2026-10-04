@@ -12,3 +12,5 @@ htmlcov/
 .env
 .env.*
 !.env.example
+
+/web/public/data/

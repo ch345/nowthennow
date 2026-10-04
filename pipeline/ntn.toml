@@ -1,0 +1,47 @@
+# Design decisions for the pipeline, in one place. Every key is optional; omitted keys use the
+# defaults shown here. Unknown keys are an error. Point NTN_CONFIG at another file to override.
+# Secrets and storage locations are NOT here: they are environment variables (see config.py).
+
+[llm]
+base_url = "https://api.pinference.ai/api/v1"   # any OpenAI-compatible endpoint
+model = "openai/gpt-4.1-mini"                   # env NTN_LLM_BASE_URL / NTN_LLM_MODEL override
+
+[crawl]
+concurrency = 20          # max in-flight requests overall
+host_delay = 1.0          # seconds between requests to one host
+max_bytes = 5_000_000
+failure_threshold = 0.30  # more failures than this marks the run unhealthy
+
+[extract]
+min_text_chars = 200      # shorter extracted text is flagged as probably JavaScript-rendered
+meaningful_ratio = 0.98   # line similarity at or above this means "same version"
+
+[enrich]
+# Fixed vocabularies the model must choose from. Edit, then bump prompt_version to re-enrich.
+domains = ["work", "family", "health", "learning", "creative", "place", "community", "rest", "other"]
+statuses = ["starting", "ongoing", "ending"]
+life_transitions = ["moved", "new_child", "left_job", "new_job", "sabbatical", "loss", "illness", "other"]
+sensitive_topics = ["health", "sexuality", "religion", "politics", "finances"]
+prompt_version = "1"      # bump to re-enrich every page
+max_text_chars = 12000    # page text sent to the model
+max_focuses = 5
+max_quotes = 3
+summary_words = 25
+concurrency = 8
+checkpoint_every = 25
+
+[embed]
+model = "sentence-transformers/all-MiniLM-L6-v2"
+max_tokens = 128
+
+[cluster]
+min_cluster_size = 8          # focuses per topic
+min_topic_pages = 3           # a topic needs this many different pages
+merge_cosine = 0.85           # topics with centroids closer than this are merged
+small_threshold = 100         # fewer focuses than this: cluster on raw embeddings, not UMAP
+seed = 42
+llm_names = true              # name topics with the LLM; false = keyword labels
+label_terms = 3               # words in a keyword-fallback label
+label_max_page_share = 0.4    # keyword labels ignore words on more than this share of pages
+topic_sample_size = 10        # focus summaries shown to the LLM when naming a topic
+excerpt_chars = 280
