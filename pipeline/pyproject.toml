@@ -1,0 +1,39 @@
+[project]
+name = "ntn"
+version = "0.1.0"
+description = "Crawler, indexer, and enrichment pipeline for now then now"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.16",
+]
+
+[project.scripts]
+ntn = "ntn.cli:app"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.400",
+    "pytest>=8.4",
+    "ruff>=0.12",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
